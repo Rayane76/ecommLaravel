@@ -2,41 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Validation\Rule;
 
-class ProductController extends Controller implements HasMiddleware 
+
+
+class OrderController extends Controller
 {
-public static function middleware(): array
-    {
-        return [
-            new Middleware('auth:sanctum', except:['index','show'])
-        ];
-    }
-
     /**
      * Display a listing of the resource.
      */
-
-
-    
     public function index()
     {
-
         try {
 
-            $products = Product::all();
+            $orders = Order::all();
 
-            return $products;
+            return $orders;
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 
 
@@ -47,12 +36,16 @@ public static function middleware(): array
     {
         try {
             $data = $request->validate([
-                'title' => ['required', 'string'],
-                'price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-                'added_by' => ['required', 'integer'],
+                'first_name' => ['required', 'string'],
+                'last_name' => ['required', 'string'],
+                'address' => ['required', 'string'],
+                'tel' => ['required', 'string'],
+                'product' => ['required','integer'],
             ]);
+
+
     
-            Product::create($data);
+            Order::create($data);
     
             return response()->json(['message' => 'success'], 200);
 
@@ -66,33 +59,30 @@ public static function middleware(): array
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Order $order)
     {
-
         try {
 
-            return $product;
+            return $order;
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Order $order)
     {
         try {
             $data = $request->validate([
-                'title' => ['sometimes','required', 'string'],
-                'price' => ['sometimes','required', 'decimal:2,8'],
-                'added_by' => ['required', 'integer'],
+                'status' => ['required','string',Rule::in(['Waiting','Confirmed','Canceled','Finished'])]
             ]);
     
-            $product->update($data);
+            $order->update($data);
     
             return response()->json(['message' => 'success'], 200);
 
@@ -106,10 +96,10 @@ public static function middleware(): array
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Order $order)
     {
         try {
-            $product->delete();
+            $order->delete();
 
             return response()->json(['message' => 'success'], 200);
             
@@ -117,6 +107,5 @@ public static function middleware(): array
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    
     }
 }

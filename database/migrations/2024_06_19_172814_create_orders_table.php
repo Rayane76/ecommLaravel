@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('address');
             $table->string('tel');
-            $table->enum('status',['Waiting','Confirmed','Canceled','Finished']);
+            $table->enum('status',['Waiting','Confirmed','Canceled','Finished'])->default('Waiting');
             $table->foreignId('product')->constrained('products');
             $table->timestamps();
         });
