@@ -6,11 +6,21 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 
 
-class OrderController extends Controller
+class OrderController extends Controller implements HasMiddleware 
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(['auth:sanctum', 'abilities:admin'],  except:['store'])
+        ];
+    }
+
+
     /**
      * Display a listing of the resource.
      */

@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        $token = $user->createToken("auth_token")->plainTextToken;
+        $token = $user->createToken("auth_token", ["seeFavorites"])->plainTextToken;
 
         return [
             'user' => $user,
@@ -44,7 +44,7 @@ class AuthController extends Controller
         }
         
 
-        $token = $user->createToken("auth_token")->plainTextToken;
+        $token = $user->createToken("auth_token", ["seeFavorites"])->plainTextToken;
 
         return [
             'user' => $user,
